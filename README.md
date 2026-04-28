@@ -1,30 +1,40 @@
-# Arduino Ultrasonic Proximity Alert System
+# Arduino Intelligent Ultrasonic Proximity Alert System
 
-A smart distance warning system built with Arduino using an ultrasonic sensor, LEDs, and a buzzer. The system measures the distance of nearby objects and gives visual and audio alerts based on proximity.
+A smart distance warning system built with Arduino using an ultrasonic sensor, LEDs, and a buzzer. The system measures nearby object distance in real time and responds with escalating visual and audio alerts based on proximity.
 
 ## Features
 
-- Real-time distance measurement in centimeters and inches
-- Green LED for safe distance
+- Real-time distance measurement in centimeters
+- Multi-zone warning system
+- Green LED for safe range
 - Yellow LED for caution range
-- Red LED for danger zone
-- Buzzer alert when object is too close
-- Live distance data shown in Serial Monitor
+- Red LED for danger and critical range
+- Adaptive buzzer alerts based on object distance
+- Non-blocking timing using `millis()`
+- Live distance data through Serial Monitor
+- Modular Arduino code using reusable functions
 
 ## Distance Zones
 
 ### Safe Zone
 - Greater than 30 cm
 - Green LED ON
+- No sound
 
 ### Caution Zone
 - Between 15 cm and 30 cm
 - Yellow LED ON
+- Slow warning beeps
 
 ### Danger Zone
-- Less than 15 cm
+- Between 5 cm and 15 cm
 - Red LED ON
-- Buzzer sounds
+- Faster warning beeps
+
+### Critical Zone
+- Less than 5 cm
+- Red LED ON
+- Continuous alarm tone
 
 ## Components Used
 
@@ -33,32 +43,45 @@ A smart distance warning system built with Arduino using an ultrasonic sensor, L
 - Red LED
 - Yellow LED
 - Green LED
-- Buzzer
+- Passive or Active Buzzer
 - Breadboard
 - Jumper Wires
 - Resistors
+
+## Project Images
+
+### Front View
+![Front Circuit](frontCircuit.jpg)
+
+### Back View
+![Back Circuit](backCircuit.jpg)
 
 ## Files Included
 
 - `main.ino` → Arduino source code
 - `README.md` → Project documentation
+- `frontCircuit.jpg` → Front circuit photo
+- `backCircuit.jpg` → Back circuit photo
 
 ## Skills Demonstrated
 
 - Sensor integration
 - Embedded systems programming
 - Distance measurement using sound waves
-- Conditional logic
+- Real-time control systems
+- Non-blocking timers with `millis()`
+- Functional code design
 - Hardware debugging
-- Real-time monitoring with Serial Monitor
+- Breadboard circuit assembly
 
 ## Future Improvements
 
-- LCD screen for live distance display
-- Adjustable distance thresholds
-- Servo-controlled automatic barrier
+- LCD live distance display
+- Adjustable thresholds with potentiometer
+- Servo-controlled barrier gate
 - Parking assist mode
 - Data logging to SD card
+- OLED graphical display
 
 ## Author
 
