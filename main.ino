@@ -7,14 +7,16 @@ const int greenLED = 7;
 const int buzzer = 12;
 
 // Sensor Pins
-const int echo = 8;
-const int trigger = 9;
+const int echoPin = 8;
+const int trigPin = 9;
+
+unsigned long lastBeep = 0;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  pinMode(trigger, OUTPUT);
-  pinMode(echo, INPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 
   pinMode(redLED, OUTPUT);
   pinMode(yellowLED, OUTPUT);
@@ -24,53 +26,74 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  float distance = measureDistance();
 
-  long duration, inches, cm;
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
 
-  digitalWrite(trigger, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigger, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigger, LOW);
-
-  duration = pulseIn(echo, HIGH);
-
-  // convert the time into a distance
-  inches = microsecondsToInches(duration);
-  cm = microsecondsToCentimeters(duration);
-
-  Serial.print(inches);
-  Serial.print("in, ");
-  Serial.print(cm);
-  Serial.print("cm");
-  Serial.println();
-
-  if (cm > 30) {
-    digitalWrite(greenLED, HIGH);
-    digitalWrite(yellowLED, LOW);
-    digitalWrite(redLED, LOW);
-    noTone(buzzer);
+  if (distance > 30) {
+    safeMode();
   }
-  else if (cm > 15) {
-    digitalWrite(greenLED, LOW);
-    digitalWrite(yellowLED, HIGH);
-    digitalWrite(redLED, LOW);
-    noTone(buzzer);
+  else if (distance > 15) {
+    cautionMode();
+  }
+  else if (distance > 5) {
+    dangerMode();
   }
   else {
-    digitalWrite(greenLED, LOW);
-    digitalWrite(yellowLED, LOW);
-    digitalWrite(redLED, HIGH);
-    tone(buzzer, 1000);
+    crticalMode();
   }
 
   delay(100);
+} 
+
+float measureDistance() {
+  long duration;
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+
+  return duration * 0.0343 / 2.0;
 }
 
-long microsecondsToInches(long microseconds) {
-  return microseconds / 74 / 2;
+void safeMode() {
+  digitalWrite(greenLED, HIGH);
+  digitalWrite(yellowLED, LOW);
+  digitalWrite(redLED, LOW);
+  noTone(buzzer);
 }
 
-long microsecondsToCentimeters(long microseconds) {
-  return microseconds / 29 / 2;
+void cautionMode() {
+  digitalWrite(greenLED, LOW);
+  digitalWrite(yellowLED, HIGH);
+  digitalWrite(redLED, LOW);
+
+  if (millis() - lastBeep >= 1000) {
+    tone(buzzer, 1000, 100);
+    lastBeep = millis();
+  }
+}
+
+void dangerMode() {
+  digitalWrite(greenLED, LOW);
+  digitalWrite(yellowLED, LOW);
+  digitalWrite(redLED, HIGH);
+  if (millis() - lastBeep >= 300) {
+    tone(buzzer, 1000, 120);
+    lastBeep = millis();
+  }
+}
+
+void crticalMode() {
+  digitalWrite(greenLED, LOW);
+  digitalWrite(yellowLED, LOW);
+  digitalWrite(redLED, HIGH);
+
+  tone(buzzer, 1500);
 }
